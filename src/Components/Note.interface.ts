@@ -6,12 +6,19 @@ export interface BaseNoteInterface {
 }
 
 export interface NoteInterface extends BaseNoteInterface {
-  handleClickOpenEditDialog: () => void;
-  handleClickOpenDeleteDialog: () => void;
+  handleClickOpenEditDialog: (selectedNote: BaseNoteInterface) => void;
+  handleClickOpenDeleteDialog: (selectedNote: BaseNoteInterface) => void;
+  toggleFavorite: (id: string) => void;
 }
 
 export interface EditNoteInterface {
   open: boolean;
   selectedNote: BaseNoteInterface;
-  onClose: (note: BaseNoteInterface) => void;
+  onClose: (updated: boolean, note?: BaseNoteInterface) => void;
+}
+
+export interface DeleteNoteInterface {
+  open: boolean;
+  selectedNote: BaseNoteInterface;
+  onClose: (response: boolean) => void;
 }

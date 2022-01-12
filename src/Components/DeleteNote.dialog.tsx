@@ -1,7 +1,7 @@
 import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
 
-import { EditNoteInterface } from "./Note.interface";
+import { DeleteNoteInterface } from "./Note.interface";
 import {
   Button,
   DialogActions,
@@ -13,10 +13,15 @@ export default function DeleteNote({
   onClose,
   selectedNote,
   open,
-}: EditNoteInterface): JSX.Element {
+}: DeleteNoteInterface): JSX.Element {
   const handleClose = () => {
-    onClose({ id: "", title: "", body: "" });
+    onClose(false);
   };
+
+  const deleteNote = () => {
+    onClose(true);
+
+  }
 
   return (
     <Dialog onClose={handleClose} open={open}>
@@ -27,8 +32,13 @@ export default function DeleteNote({
         </Typography>
       </DialogContent>
       <DialogActions>
-        <Button>Cancel</Button>
-        <Button variant="contained" color="error" disableElevation>
+        <Button onClick={handleClose}>Cancel</Button>
+        <Button
+          variant="contained"
+          color="error"
+          onClick={deleteNote}
+          disableElevation
+        >
           Delete
         </Button>
       </DialogActions>

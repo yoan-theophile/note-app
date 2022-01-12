@@ -9,11 +9,13 @@ import { IconButton, Tooltip } from "@mui/material";
 import { Favorite, FavoriteBorderOutlined } from "@mui/icons-material";
 
 export default function Note({
+  id,
   title,
   body,
   favorite,
   handleClickOpenEditDialog,
   handleClickOpenDeleteDialog,
+  toggleFavorite,
 }: NoteInterface): JSX.Element {
   const [bodyMaxLength] = useState<number>(250);
 
@@ -34,17 +36,30 @@ export default function Note({
       </CardContent>
       <CardActions>
         <Tooltip title={favorite ? "Remove from favorite" : "Add to favorite"}>
-          <IconButton size="small" onClick={() => {}}>
+          <IconButton
+            size="small"
+            onClick={() => {
+              toggleFavorite(id);
+            }}
+            disabled={!(title && body)}
+          >
             {favorite ? <Favorite /> : <FavoriteBorderOutlined />}
           </IconButton>
         </Tooltip>
-        <Button size="small" onClick={() => handleClickOpenEditDialog()}>
+        <Button
+          size="small"
+          onClick={() =>
+            handleClickOpenEditDialog({ id, title, body, favorite })
+          }
+        >
           Edit
         </Button>
         <Button
           size="small"
           color="error"
-          onClick={() => handleClickOpenDeleteDialog()}
+          onClick={() =>
+            handleClickOpenDeleteDialog({ id, title, body, favorite })
+          }
         >
           Delete
         </Button>
