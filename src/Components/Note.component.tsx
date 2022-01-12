@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { NoteInterface } from "./Note.interface";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -7,21 +8,21 @@ import Typography from "@mui/material/Typography";
 import { IconButton, Tooltip } from "@mui/material";
 import { Favorite, FavoriteBorderOutlined } from "@mui/icons-material";
 
-interface Props {
-  id: string;
-  title: string;
-  body: string;
-  favorite?: boolean;
-}
-
-export default function ImgMediaCard({
+export default function Note({
   title,
   body,
   favorite,
-}: Props): JSX.Element {
+  handleClickOpenEditDialog,
+  handleClickOpenDeleteDialog,
+}: NoteInterface): JSX.Element {
   const [bodyMaxLength] = useState<number>(250);
+
   return (
-    <Card sx={{ maxWidth: 345 }}>
+    <Card
+      sx={{
+        maxWidth: 345,
+      }}
+    >
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
           {title}
@@ -37,8 +38,14 @@ export default function ImgMediaCard({
             {favorite ? <Favorite /> : <FavoriteBorderOutlined />}
           </IconButton>
         </Tooltip>
-        <Button size="small">Edit</Button>
-        <Button size="small" color="error">
+        <Button size="small" onClick={() => handleClickOpenEditDialog()}>
+          Edit
+        </Button>
+        <Button
+          size="small"
+          color="error"
+          onClick={() => handleClickOpenDeleteDialog()}
+        >
           Delete
         </Button>
       </CardActions>
