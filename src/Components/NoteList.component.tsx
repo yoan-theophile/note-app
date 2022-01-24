@@ -135,7 +135,7 @@ export default function NoteList(): JSX.Element {
               <Button
                 variant="outlined"
                 onClick={addNote}
-                sx={{ color: "#f0f0f0" }}
+                sx={{ color: "#ffffff" }}
               >
                 Add Note
               </Button>
