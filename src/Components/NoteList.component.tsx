@@ -8,7 +8,6 @@ import {
   Box,
   CssBaseline,
   Divider,
-  Drawer,
   Grid,
   List,
   ListItem,
@@ -19,11 +18,13 @@ import {
   Typography,
   Icon,
   Button,
+  Fab,
+  Tooltip,
+  SwipeableDrawer,
 } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 import DeleteNote from "./DeleteNote.dialog";
 import { Favorite } from "@mui/icons-material";
-
-const drawerWidth = 240;
 
 export default function NoteList(): JSX.Element {
   const [noteList, setNoteList] = useState<BaseNoteInterface[]>([]);
@@ -116,15 +117,37 @@ export default function NoteList(): JSX.Element {
 
     setOpenSnackbar(false);
   };
+
+  const [openFavoriteDrawer, setOpenFavoriteDrawer] = useState<boolean>(false);
+
+  const toggleFavoriteDrawer =
+    (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
+      if (
+        event &&
+        event.type === "keydown" &&
+        ((event as React.KeyboardEvent).key === "Tab" ||
+          (event as React.KeyboardEvent).key === "Shift" ||
+          (event as React.KeyboardEvent).key === "Enter")
+      ) {
+        return;
+      }
+
+      setOpenFavoriteDrawer(open);
+    };
+
   return (
     <>
-      <Box sx={{ display: "flex" }}>
+      <Box
+        sx={{
+          display: "flex",
+          position: "relative",
+        }}
+      >
         <CssBaseline />
         <AppBar
           position="fixed"
           sx={{
-            width: `calc(100% - ${drawerWidth}px)`,
-            ml: `${drawerWidth}px`,
+            width: '100%',
           }}
         >
           <Toolbar>
@@ -134,25 +157,19 @@ export default function NoteList(): JSX.Element {
               </Typography>
               <Button
                 variant="outlined"
-                onClick={addNote}
+                onClick={toggleFavoriteDrawer(true)}
                 sx={{ color: "#ffffff" }}
               >
-                Add Note
+                Favorite
               </Button>
             </Grid>
           </Toolbar>
         </AppBar>
-        <Drawer
-          sx={{
-            width: drawerWidth,
-            flexShrink: 0,
-            "& .MuiDrawer-paper": {
-              width: drawerWidth,
-              boxSizing: "border-box",
-            },
-          }}
-          variant="permanent"
-          anchor="left"
+        <SwipeableDrawer
+          open={openFavoriteDrawer}
+          onClose={toggleFavoriteDrawer(false)}
+          onOpen={toggleFavoriteDrawer(true)}
+          anchor="bottom"
         >
           <Toolbar>
             <Typography
@@ -168,22 +185,31 @@ export default function NoteList(): JSX.Element {
             </Icon>
           </Toolbar>
           <Divider />
-          <List>
-            {noteList
-              .filter(({ favorite }) => favorite)
-              .map((note, index) => (
-                <ListItem
-                  button
-                  key={note.title + index}
-                  onClick={() => {
-                    handleClickOpenEditDialog(note);
-                  }}
-                >
-                  <ListItemText primary={note.title} />
-                </ListItem>
-              ))}
-          </List>
-        </Drawer>
+          <Box
+            sx={{
+              width: "auto",
+            }}
+            role="presentation"
+            onClick={toggleFavoriteDrawer(false)}
+            onKeyDown={toggleFavoriteDrawer(false)}
+          >
+            <List>
+              {noteList
+                .filter(({ favorite }) => favorite)
+                .map((note, index) => (
+                  <ListItem
+                    button
+                    key={note.title + index}
+                    onClick={() => {
+                      handleClickOpenEditDialog(note);
+                    }}
+                  >
+                    <ListItemText primary={note.title} />
+                  </ListItem>
+                ))}
+            </List>
+          </Box>
+        </SwipeableDrawer>
         <Box
           component="main"
           sx={{ flexGrow: 1, bgcolor: "background.default", p: 3 }}
@@ -210,8 +236,24 @@ export default function NoteList(): JSX.Element {
               </Typography>
             )}
           </Grid>
+          <Tooltip title="ADD NOTE">
+            <Fab
+              color="primary"
+              size="large"
+              aria-label="add"
+              onClick={addNote}
+              sx={{
+                position: "absolute",
+                top: "calc(100vh - 80px)",
+                right: "28px",
+              }}
+            >
+              <AddIcon />
+            </Fab>
+          </Tooltip>
         </Box>
       </Box>
+
       <EditNote
         selectedNote={selectedNote}
         open={openEditDialog}
